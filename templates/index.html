@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculador de Comisiones</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #28a745;
+            border-radius: 5px;
+            background-color: #d4edda;
+            color: #155724;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Calculador de Comisiones</h1>
+        <div class="form-group">
+            <label for="monto_ventas">Monto de Ventas:</label>
+            <input type="number" id="monto_ventas" placeholder="Ingrese el monto de ventas">
+        </div>
+        <div class="form-group">
+            <label for="porcentaje_comision">Porcentaje de Comisión:</label>
+            <input type="number" id="porcentaje_comision" placeholder="Ingrese el porcentaje de comisión">
+        </div>
+        <button onclick="calcularComision()">Calcular Comisión</button>
+        <div id="resultado" class="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        async function calcularComision() {
+            const montoVentas = document.getElementById('monto_ventas').value;
+            const porcentajeComision = document.getElementById('porcentaje_comision').value;
+            
+            const response = await fetch('http://localhost:5000/calcular_comision', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    monto_ventas: montoVentas,
+                    porcentaje_comision: porcentajeComision
+                })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                document.getElementById('resultado').style.display = 'block';
+                document.getElementById('resultado').innerText = `La comisión es de:$ ${data.comision}`;
+            } else {
+                document.getElementById('resultado').style.display = 'block';
+                document.getElementById('resultado').innerText = `Error: ${data.error}`;
+            }
+        }
+    </script>
+</body>
+</html>
